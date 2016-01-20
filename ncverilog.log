@@ -1,0 +1,13 @@
+ncverilog: 13.10-p001: (c) Copyright 1995-2013 Cadence Design Systems, Inc.
+TOOL:	ncverilog	13.10-p001: Started on Jan 20, 2016 at 15:08:18 PST
+ncverilog
+	+access+r
+	tb_top.v
+	alu.v
+Loading snapshot worklib.tb_top:v .................... Done
+ncsim> source /software/nonrdist/cadence-incisiv131/tools/inca/files/ncsimrc
+ncsim> run
+Simulation complete via $finish(1) at time 13750 PS + 0
+./tb_top.v:49     $finish;
+ncsim> exit
+TOOL:	ncverilog	13.10-p001: Exiting on Jan 20, 2016 at 15:08:19 PST  (total: 00:00:01)
