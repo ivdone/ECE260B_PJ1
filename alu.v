@@ -137,6 +137,63 @@ assign SUM[64] = (A[63] ^ B[63]) ? SUM[63]:A[63];
 // Your code ends here
 endmodule
 
+module ADD_carryout(A,B,SUM);
+
+input   signed [63:0] A, B;
+output  signed [64:0] SUM;
+
+wire signed [63:0] A;
+wire signed [63:0] B;
+wire signed [64:0] SUM;
+// Your code starts here
+//assign SUM = A + B;
+wire Cin;
+wire [2:0] C_inter;
+assign Cin = 1'b0;
+
+
+C16_ADDER A0(
+.A(A[15:0]),
+.B(B[15:0]),
+.C(Cin),
+.Cout(C_inter[0]),
+.S(SUM[15:0])
+);
+
+C16_ADDER A1(
+.A(A[31:16]),
+.B(B[31:16]),
+.C(C_inter[0]),
+.Cout(C_inter[1]),
+.S(SUM[31:16])
+);
+
+C16_ADDER A2(
+.A(A[47:32]),
+.B(B[47:32]),
+.C(C_inter[1]),
+.Cout(C_inter[2]),
+.S(SUM[47:32])
+);
+
+C16_ADDER A3(
+.A(A[63:48]),
+.B(B[63:48]),
+.C(C_inter[2]),
+.Cout(SUM[64]),
+.S(SUM[63:48])
+);
+
+
+// TODO 
+// ADDING A NEW HIERARCHICAL LEVEL
+// TEST PASSED 
+
+
+
+// Your code ends here
+endmodule
+
 // 1-bit carry lookahead adder
 module C1_ADDER(A,B,C,G,P,S);
 input A,B,C;
@@ -246,10 +303,27 @@ C_GEN Carry_Gen(
 .COUT(C_inter[2:0]),
 .GOUT(G),
 .POUT(P)
-);
+); 
 assign Cout = C & P | G;
 endmodule
 
+module two_complement(IN,OUT);
+input [127:0] IN;
+output [127:0] OUT;
+wire [127:0] IN;
+wire [127:0] OUT;
+wire [127:0] inter1;
+wire one;
+wire carry;
+wire [62:0] zeros;
+wire dumb;
+assign zeros = 63'b0;
+assign one = 1'b1;
+assign inter1 = ~IN;
+ADD_carryout add_1(inter1[63:0],{zeros[62:0],one},{carry,OUT[63:0]});
+ADD_carryout add_2(inter1[127:64],{zeros[62:0],carry} ,{dumb,OUT[127:64]});
+
+endmodule
 
 module MUL(A,B,PROD);
 
@@ -258,7 +332,34 @@ output  signed [127:0] PROD;
 
 wire signed [127:0] PROD;
 // Your code starts here
+wire signed [63:0] A;
+wire signed [63:0] B;
+wire [127:0] pre_PROD,s_PROD;
+wire [63:0] zeros;
+wire [65*63-1:0] inter_add;
+wire [64*64-1:0] add_in;
+wire [63:0] A_n,B_n;
+wire [63:0] A_in,B_in;
+wire [63:0] one;
+wire numb1,numb2,numb3;
+assign one = 64'b1;
+assign zeros = 64'b0;
+ADD twos_comp_A(~A, one, {numb1,A_n});
+ADD twos_comp_B(~B, one, {numb2,B_n});
+assign A_in = A[63]? A_n:A;
+assign B_in = B[63]? B_n:B;
+assign inter_add[62:0] = 63'b0;
 
-
+genvar n;
+  generate
+    for (n=0; n<64; n=n+1) begin : adders
+      assign add_in[n*64+63: n*64 ] = B_in[n] ? A_in:zeros;
+      ADD u (.A(add_in[n*64 + 63 : n*64]), .B({1'b0, inter_add[n * 63 + 62 : n * 63]}), .SUM({ numb3, inter_add[(n+1) * 63 + 62 : (n+1) * 63 ] , pre_PROD[n]}));
+    end
+  endgenerate
+assign pre_PROD[126:64] = inter_add[64*63 + 62 : 64*63  ];
+assign pre_PROD[127] = 1'b0 ;
+two_complement TC (pre_PROD,s_PROD);
+assign PROD = (A[63] ^ B[63]) ? s_PROD:pre_PROD;
 // Your code ends here
 endmodule

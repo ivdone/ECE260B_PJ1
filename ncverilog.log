@@ -1,13 +1,44 @@
 ncverilog: 13.10-p001: (c) Copyright 1995-2013 Cadence Design Systems, Inc.
-TOOL:	ncverilog	13.10-p001: Started on Jan 20, 2016 at 15:08:18 PST
+TOOL:	ncverilog	13.10-p001: Started on Jan 22, 2016 at 15:45:47 PST
 ncverilog
 	+access+r
 	tb_top.v
 	alu.v
+Recompiling... reason: file './alu.v' is newer than expected.
+	expected: Fri Jan 22 15:43:28 2016
+	actual:   Fri Jan 22 15:45:46 2016
+file: alu.v
+	module worklib.ADD_carryout:v
+		errors: 0, warnings: 0
+	module worklib.MUL:v
+		errors: 0, warnings: 0
+		Caching library 'worklib' ....... Done
+	Elaborating the design hierarchy:
+	Building instance overlay tables: .................... Done
+	Generating native compiled code:
+		worklib.ADD_carryout:v <0x02b782c0>
+			streams:   8, words:  1666
+		worklib.MUL:v <0x15607dd6>
+			streams:  71, words: 45777
+	Loading native compiled code:     .................... Done
+	Building instance specific data structures.
+	Design hierarchy summary:
+		                   Instances  Unique
+		Modules:                7249      10
+		Registers:                19      19
+		Scalar wires:          20572       -
+		Expanded wires:         4862     106
+		Vectored wires:           21       -
+		Always blocks:             5       5
+		Initial blocks:            2       2
+		Cont. assignments:        75      25
+		Pseudo assignments:       51      27
+		Simulation timescale:    1ps
+	Writing initial simulation snapshot: worklib.tb_top:v
 Loading snapshot worklib.tb_top:v .................... Done
 ncsim> source /software/nonrdist/cadence-incisiv131/tools/inca/files/ncsimrc
 ncsim> run
 Simulation complete via $finish(1) at time 13750 PS + 0
 ./tb_top.v:49     $finish;
 ncsim> exit
-TOOL:	ncverilog	13.10-p001: Exiting on Jan 20, 2016 at 15:08:19 PST  (total: 00:00:01)
+TOOL:	ncverilog	13.10-p001: Exiting on Jan 22, 2016 at 15:45:48 PST  (total: 00:00:01)
